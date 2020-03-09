@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "Tbot"
+version = "0.1.0"
+description = "A personal project of a Telegram Bot"
+authors = ["Francisco Gomez Prieto <fgomezpr@tutanota.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+python-telegram-bot = "^12.4.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
