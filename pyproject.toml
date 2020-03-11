@@ -8,6 +8,8 @@ authors = ["Francisco Gomez Prieto <fgomezpr@tutanota.com>"]
 python = "^3.7"
 python-telegram-bot = "^12.4.2"
 flake8 = "^3.7.9"
+request = "^2019.4.13"
+pyyaml = "^5.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
