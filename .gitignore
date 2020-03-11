@@ -31,4 +31,6 @@
 .history
 .gitignore
 
+source/access_data.json
+
 # End of https://www.gitignore.io/api/linux,visualstudiocode
