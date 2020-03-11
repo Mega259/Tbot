@@ -30,6 +30,7 @@
 # Ignore all local history of files
 .history
 .gitignore
+src/access_data.json
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
