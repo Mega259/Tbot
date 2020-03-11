@@ -26,6 +26,7 @@
 *.code-workspace
 *.log
 .vscode
+source/access_data.json
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
