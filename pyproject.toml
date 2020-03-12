@@ -2,12 +2,16 @@
 name = "Tbot"
 version = "0.1.0"
 description = "A personal project of a Telegram Bot"
-authors = ["Francisco Gomez Prieto <fgomezpr@tutanota.com>"]
+authors = ["Francisco Gomez Prieto <fgomezpr@tutanota.com>", "Evelyn Amanda Andrade Bastidas <evelyn.amanda14@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
 python-telegram-bot = "^12.4.2"
 flake8 = "^3.7.9"
+request = "^2019.4.13"
+pyyaml = "^5.3"
+flask = "^1.1.1"
+requests = "^2.23.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
