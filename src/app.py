@@ -44,20 +44,16 @@ def call():
     except Exception as e:
         _logger.error('Error', exc_info=e)
 
-
-def send_message(chat_id, text='wat'):
-    _logger.info(data)
-    
-
-
 def main():
-    # TODO
-    
+    # DONE
     # 1. Create Basic Flask App
     # 2. Set up a tunnel (Serveo/ngrok)
     # 3. Set a webhook # https://api.telegram.org/bot{}/setWebhook?url={}
     # 4. Receive and parse
     # 5. Send Message
+    # TODO
+    # 6. telegram.ext.CommandHandler
+
     pass
 
 if __name__ == "__main__":
