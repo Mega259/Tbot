@@ -1,10 +1,10 @@
 import logger_handler
-import request
 import re
+import requests
 import json
 import logging
 import telegram
-from flask import json, request, Flask, jsonify
+from flask import json, request, Flask, jsonify, Response
 
 # Set Flask app
 app = Flask(__name__)
@@ -23,24 +23,31 @@ bot = telegram.Bot(token=bot_token)
 _logger.info(bot.get_me())
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def call():
     _logger.info("call has been called")
     try:
-        return jsonify({'success': True})
+        if request.method == 'POST':
+            msg = request.json
+            _logger.info('I received: {}'.format(msg))
+            return Response('ok', status=200)
+        else:
+            return "<h1>Hello bot<h1>"
     except Exception as e:
-        _logger.error('Error servicio insertRoutes', exc_info=e)
+        _logger.error('Error', exc_info=e)
+
+def set_webhook(url):
+    pass
 
 def main():
     # TODO
     
     # 1. Create Basic Flask App
     # 2. Set up a tunnel (Serveo/ngrok)
-    # 3. Set a webhook
+    # 3. Set a webhook # https://api.telegram.org/bot{}/setWebhook?url={}
     # 4. Receive and parse
     # 5. Send Message
-
+    pass
 
 if __name__ == "__main__":
-    main()
     app.run(debug=True)

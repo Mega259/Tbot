@@ -16,7 +16,7 @@ if os.path.isdir(log_dir) is False:
     except Exception as e:
         print("Exception creating directory: {}".format(e))
 
-logging_path = os.path.join(path_to_add, 'loggingConfig.yml')
+logging_path = os.path.join(path_to_add, 'logging_config.yml')
 logs_path = os.path.join(path_to_add, 'logs', 'info.log')
 with open(logging_path, 'rt') as f:
     config = yaml.safe_load(f.read())
