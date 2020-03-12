@@ -20,8 +20,14 @@ bot_token = access_data['token']
 bot_user_name = access_data['user_name']
 
 bot = telegram.Bot(token=bot_token)
-_logger.info(bot.get_me())
+bot_data = bot.get_me()
+_logger.info(bot_data)
 
+def set_webhook(url):
+    result = request.get('https://api.telegram.org/bot{}/setWebhook?url={}'.format(bot_token, url))
+    _logger.info(result)
+
+# set_webhook(access_data['end_point'])
 
 @app.route('/', methods=['POST', 'GET'])
 def call():
@@ -30,14 +36,19 @@ def call():
         if request.method == 'POST':
             msg = request.json
             _logger.info('I received: {}'.format(msg))
+            a = bot.send_message(chat_id=msg['message']['chat']['id'], text=msg['message']['text'])
+            _logger.info('After sending a message: {}'.format(a))
             return Response('ok', status=200)
         else:
             return "<h1>Hello bot<h1>"
     except Exception as e:
         _logger.error('Error', exc_info=e)
 
-def set_webhook(url):
-    pass
+
+def send_message(chat_id, text='wat'):
+    _logger.info(data)
+    
+
 
 def main():
     # TODO
