@@ -27,7 +27,7 @@ class Bot_Manager:
     def set_dispatcher(self):
         self.update_queue = Queue()
         self.dispatcher = Dispatcher(self.bot, self.update_queue)
-        help_handler = CommandHandler('help', help_command)
+        help_handler = CommandHandler('help', help_command, pass_args=True)
         self.dispatcher.add_handler(help_handler)
         thread = Thread(target=self.dispatcher.start, name='dispatcher')
         thread.start()
