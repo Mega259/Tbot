@@ -15,16 +15,15 @@ def start(update, context):
 def button(update, context):
     logger.info('Called button command')
     query = update.callback_query
-    query.edit_message_text(text="Opcion seleccionada: {}".format(query.data))
+    # query.edit_message_text(text="Opcion seleccionada: {}".format(query.data))
+    if query == '1':
+        registrar(update, context)
+    else:
+        help_command(update, context)
 
 def help_command(update, context):
     logger.info('Called the help command')
     return update.message.reply_text("Hola holita")
-
-def registrar(update, context):
-    logger.info('Called the registrar command')
-    return update.message.reply_text('Aún no hago nada')
-    pass
 
 def error(update, context):
     logger.error('Update {} caused error: {}'.format(update, context.error))

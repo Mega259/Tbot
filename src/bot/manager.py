@@ -1,11 +1,9 @@
 from bot.parameters import Parameters
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, CommandHandler, Updater, CallbackQueryHandler
+from telegram.ext import Dispatcher, CommandHandler, Updater, CallbackQueryHandler, ConversationHandler, MessageHandler, Filters, ReplyKeyboardMarkup
 from logger_handler import get_logger
-from bot.commands import start, button, help_command, registrar, error
+from bot.commands import start, button, help_command, error
 import json
-
-_logger = get_logger()
 
 class Bot_Manager:
     def __init__(self, logger):
@@ -37,11 +35,11 @@ class Bot_Manager:
         self.dispatcher = self.updater.dispatcher
         start_handler = CommandHandler('start', start, pass_args=True)
         help_handler = CommandHandler('help', help_command, pass_args=True)
-        registrar_handler = CommandHandler('registrar', registrar, pass_args=True)
         self.dispatcher.add_handler(help_handler)
         self.dispatcher.add_handler(start_handler)
         self.dispatcher.add_handler(CallbackQueryHandler(button))
         self.dispatcher.add_error_handler(error)
+        self.dispatcher.add_handler(setup_registrar_handler)
 
     def start_bot(self):
         """
@@ -51,9 +49,59 @@ class Bot_Manager:
         self.updater.start_polling()
         self.updater.idle()
 
+#### FUNTIONS
+
+CHOOSING, TYPING_CHOICE = range(2)
+
+def setup_registrar_handler():
+    CHOOSING, TYPING_REPLY = range(2)
+    return ConversationHandler(
+        entry_points=[CommandHandler('registrar', start_registrar)],
+
+        states={
+            CHOOSING: [MessageHandler(Filters.regex('^(Nombre completo|Mes de pago|Grupo de trabajo)$'), generic_choice)],
+            TYPING_CHOICE: [MessageHandler(Filters.text, received_information)]
+        },
+
+        fallbacks=[MessageHandler(Filters.regex('^Done$'), done)]
+    )
+
+reply_keyboard = [
+    ['Nombre completo', 'Mes de pago'],
+    ['Grupo de trabajo'],
+    ['Done']
+]
+markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+
+def start_registrar(update, context):
+    update.message.reply_text(
+        "Hola, soy Wallee, el bot del FABLAB Badajoz"
+        "¿En que te puedo ayudar?",
+        reply_markup=markup)
+
+    return CHOOSING
+
+def generic_choice(update, context):
+    text = update.message.text
+    context.user_data['choice'] = text
+    if (text == 'Nombre completo'):
+        update.message.reply_text('Escriba su nombre completo a continuación')
+    elif (text == 'Mes de pago'):
+        update.message.reply_text('Escriba el mes de pago de la cuota anual')    
+    elif (text == 'Grupo de trabajo'):
+        update.message.reply_text('Escriba sus grupos de trabajo separados por coma')
+
+    return TYPING_CHOICE
+
+def received_information(update, context):
+    pass
+
+def done(update, context):
+    pass
+
     # Old Code
     # def set_webhook(self):
-    #     """
+    #     """   
     #     It sets up a webhook
     #     """
     #     webhook_info = self.bot.getWebhookInfo()
