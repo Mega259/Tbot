@@ -19,7 +19,7 @@ class Bot_Manager:
     def set_webhook(self):
         webhook_info = self.bot.getWebhookInfo()
         _logger.info(webhook_info)
-        if webhook_info['url'] == "":
+        if webhook_info['url'] != self.parameters.get_endpoint():
             self.bot.set_webhook(self.parameters.get_endpoint())
         else:
             pass
@@ -27,7 +27,7 @@ class Bot_Manager:
     def set_dispatcher(self):
         self.update_queue = Queue()
         self.dispatcher = Dispatcher(self.bot, self.update_queue)
-        help_handler = CommandHandler('help', help_command, pass_args=True)
+        help_handler = CommandHandler('jiji', help_command, pass_args=True)
         self.dispatcher.add_handler(help_handler)
         thread = Thread(target=self.dispatcher.start, name='dispatcher')
         thread.start()
