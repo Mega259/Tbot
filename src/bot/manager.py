@@ -1,8 +1,8 @@
 from bot.parameters import Parameters
 from telegram import Bot, Update
-from telegram.ext import Dispatcher, CommandHandler, Updater
+from telegram.ext import Dispatcher, CommandHandler, Updater, CallbackQueryHandler
 from logger_handler import get_logger
-from bot.commands.help import help_command
+from bot.commands import start, button, help_command, registrar, error
 import json
 
 _logger = get_logger()
@@ -35,9 +35,14 @@ class Bot_Manager:
         """
         self.updater = Updater(self.parameters.get_token(), use_context=True)
         self.dispatcher = self.updater.dispatcher
+        start_handler = CommandHandler('start', start, pass_args=True)
         help_handler = CommandHandler('help', help_command, pass_args=True)
+        registrar_handler = CommandHandler('registrar', registrar, pass_args=True)
         self.dispatcher.add_handler(help_handler)
-    
+        self.dispatcher.add_handler(start_handler)
+        self.dispatcher.add_handler(CallbackQueryHandler(button))
+        self.dispatcher.add_error_handler(error)
+
     def start_bot(self):
         """
         It sets up the bot
