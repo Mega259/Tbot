@@ -22,6 +22,8 @@ def help_command(update, context):
     return update.message.reply_text("Hola holita")
 
 def registrar(update, context):
+    logger.info('Called the registrar command')
+    return update.message.reply_text('Aún no hago nada')
     pass
 
 def error(update, context):
