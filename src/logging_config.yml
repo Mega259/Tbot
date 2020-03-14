@@ -2,8 +2,8 @@ version: 1
 disable_existing_loggers: true
 formatters:
   standard:
-    format: '%(asctime)s - %(levelname)-8s - %(name)-10s -  %(module)-15s - %(funcName)-20s - %(lineno)4d: %(message)s'
-#               hour    - WARNING/INFO/ETC - name of logger - name of file - function name - line in file - message
+    format: '%(asctime)s - %(levelname)-6s - %(module)-10s - %(funcName)-15s - %(lineno)4d: %(message)s'
+#               hour    - WARNING/INFO/ETC - name of file - function name - line in file - message
   reduced: 
     format: '%(levelname)-8s - %(module)-15s - %(funcName)-20s - %(lineno)4d: %(message)s'
 handlers:

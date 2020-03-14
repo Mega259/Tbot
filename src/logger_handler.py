@@ -23,6 +23,8 @@ def set_logger():
         config = yaml.safe_load(f.read())
         config['handlers']['file_handler']['filename'] = logs_path
         logging.config.dictConfig(config)
+    
+    return logging.getLogger('generic')
 
 def get_logger():
     return logging.getLogger('generic')
