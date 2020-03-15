@@ -1,4 +1,5 @@
 {
     "token": "1119340148:AAEMuAJ5JZ2Jz8s_aRVwHiGaL7PwFJBJ4JI",
-    "user_name": "walleeMaker_bot"
+    "user_name": "walleeMaker_bot",
+    "endpoint": "https://bbcef943.ngrok.io",
 }
