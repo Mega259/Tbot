@@ -4,7 +4,7 @@ from telegram.ext import Dispatcher, CommandHandler, Updater, CallbackQueryHandl
 from logger_handler import get_logger
 from bot.commands import start, button, help_command, error
 import json, logging
-
+import os
 class Bot_Manager:
     def __init__(self, logger):
         """
@@ -50,7 +50,8 @@ class Bot_Manager:
         self.updater.idle()
 
 #### FUNTIONS
-
+path = os.path.abspath(os.path.dirname(__file__))
+users = os.path.join(path, 'users.json')
 CHOOSING, TYPING_CHOICE = range(2)
 
 def setup_registrar_handler():
@@ -59,7 +60,8 @@ def setup_registrar_handler():
         entry_points=[CommandHandler('registrar', start_registrar)],
 
         states={
-            CHOOSING: [MessageHandler(Filters.regex('^(Nombre completo|Mes de pago|Grupo de trabajo)$'), generic_choice)],
+            CHOOSING: [MessageHandler(Filters.regex('^(Nombre completo|Mes de pago|Grupo de trabajo)$'), generic_choice),
+                       MessageHandler(Filters.regex('^(Acabar)$'), done)],
             TYPING_CHOICE: [MessageHandler(Filters.text, received_information)]
         },
 
@@ -69,16 +71,29 @@ def setup_registrar_handler():
 reply_keyboard = [
     ['Nombre completo', 'Mes de pago'],
     ['Grupo de trabajo'],
-    ['SI']
+    ['Acabar']
 ]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
 def start_registrar(update, context):
-    update.message.reply_text(
-        "Hola, soy Wallee, el bot del FABLAB Badajoz "
-        "Vamos a proceder a registrarte Ok?",
-        reply_markup=markup)
-
+    user_id = update.message.chat.username
+    try:
+        with open(users, 'r') as f:
+            a = json.load(f)
+            try:
+                context.user_data.update(a[user_id])
+            except Exception as e:
+                pass
+            f.close()
+        if (len(context.user_data) != 0):
+            update.message.reply_text('Bienvenido de nuevo, ¿qué dato deseas editar?', reply_markup=markup)
+        else:
+            update.message.reply_text(
+                "Hola, soy Wallee, el bot del FABLAB Badajoz "
+                "Vamos a proceder a registrarte",
+                reply_markup=markup)
+    except Exception as e:
+        print(e)
     return CHOOSING
 
 def generic_choice(update, context):
@@ -95,11 +110,8 @@ def generic_choice(update, context):
 
 def received_information(update, context):
     user_data = context.user_data
-    print(user_data)
     text = update.message.text
-    print(text)
     category = user_data['choice']
-    print(category)
     user_data[category] = text
     
     #update.message.reply_text("Bien!! Por ahora tenemos esto:"
@@ -108,17 +120,15 @@ def received_information(update, context):
     
     if (category == 'Nombre completo'):
         update.message.reply_text('Bien!! Su nombre es: {}. \n'
-                                    'Ahora continua indicando cuando fue el pago de la cuota '
-                                    'anual.'.format(text),
+                                    'Vuelva a elegir o pulse acabar'.format(text),
                                     reply_markup=markup)
     elif (category == 'Mes de pago'):
         update.message.reply_text('Genial!! El mes de pago de tu cuota fue en: {}. \n'
-                                    'Por ultimo continua a introducir a que grupo de trabajo '
-                                    'pertenece.' .format(text),
+                                    'Vuelva a elegir o pulse acabar'.format(text),
                                     reply_markup=markup)    
     elif (category == 'Grupo de trabajo'):
-        update.message.reply_text('Perfecto!! Tus datos introducidos son los siguientes: '
-                                    '{}.\n ¿Esta todo correcto?' .format(facts_to_str(user_data)),
+        update.message.reply_text('Perfecto!! Tus grupos de trabajo son: '
+                                    '{}.\n Vuelva a elegir o pulse acabar' .format(facts_to_str(user_data)),
                                     reply_markup=markup)
         
     del user_data['choice']
@@ -128,11 +138,25 @@ def received_information(update, context):
 
 def done(update, context):
     user_data = context.user_data
+    user_id = update.message.chat.username
+    print(user_data)
     if 'choice' in user_data:
         del user_data['choice']
-
+    db = {}
+    with open(users, 'r') as f:
+        db = json.load(f)
+        if user_id in db:
+            print('Antes de sobreescribir')
+            db[user_id] = user_data
+        else:
+            print('Antes de escribir escribir')
+            db.update({user_id: user_data})
+        print('Terminando escribir')
+        f.close()
+    with open(users, 'w') as f:
+        json.dump(db, f, default=str)
+        f.close()
     update.message.reply_text("Felicidades!! El registro se ha completado correctamente...")
-
     user_data.clear()
     return ConversationHandler.END
 

@@ -15,11 +15,7 @@ def start(update, context):
 def button(update, context):
     logger.info('Called button command')
     query = update.callback_query
-    # query.edit_message_text(text="Opcion seleccionada: {}".format(query.data))
-    if query == '1':
-        registrar(update, context)
-    else:
-        help_command(update, context)
+    query.edit_message_text(text="Opcion seleccionada: {}".format(query.data))
 
 def help_command(update, context):
     logger.info('Called the help command')
