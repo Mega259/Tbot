@@ -60,8 +60,9 @@ def setup_registrar_handler():
         entry_points=[CommandHandler('registrar', start_registrar)],
 
         states={
-            CHOOSING: [MessageHandler(Filters.regex('^(Nombre completo|Mes de pago|Grupo de trabajo)$'), generic_choice),
-                       MessageHandler(Filters.regex('^(Acabar)$'), done)],
+            CHOOSING: [
+                MessageHandler(Filters.regex('^(Nombre completo|Mes de pago|Grupo de trabajo)$'), generic_choice),
+                MessageHandler(Filters.regex('^(Acabar)$'), done)],
             TYPING_CHOICE: [MessageHandler(Filters.text, received_information)]
         },
 
@@ -86,11 +87,12 @@ def start_registrar(update, context):
                 pass
             f.close()
         if (len(context.user_data) != 0):
-            update.message.reply_text('Bienvenido de nuevo, ¿qué dato deseas editar?', reply_markup=markup)
+            update.message.reply_text('Bienvenido de nuevo, 🖖🏼🖖🏼 ¿qué dato deseas editar? 🔖🔁', reply_markup=markup)
         else:
             update.message.reply_text(
-                "Hola, soy Wallee, el bot del FABLAB Badajoz "
-                "Vamos a proceder a registrarte",
+                "Hola 👋🏼👋🏼, soy Wallee 🤖🤖, el bot del FABLAB Badajoz 🔧💻 "
+                "Vamos a proceder a registrarte. 📝📝\n"
+                "▶️ Pulsa 'Nombre Completo' ",
                 reply_markup=markup)
     except Exception as e:
         print(e)
@@ -100,11 +102,11 @@ def generic_choice(update, context):
     text = update.message.text
     context.user_data['choice'] = text
     if (text == 'Nombre completo'):
-        update.message.reply_text('Escriba su nombre completo a continuación:')
+        update.message.reply_text('Escriba su nombre completo a continuación: ⬇️⬇️')
     elif (text == 'Mes de pago'):
-        update.message.reply_text('Escriba el mes de pago de la cuota anual:')    
+        update.message.reply_text('Escriba el mes de pago de la cuota anual: ⬇️⬇️')    
     elif (text == 'Grupo de trabajo'):
-        update.message.reply_text('Escriba su grupo u grupos de trabajo separados por coma:')
+        update.message.reply_text('Escriba su grupo u grupos de trabajo separados por coma: ⬇️⬇️')
 
     return TYPING_CHOICE
 
@@ -119,20 +121,24 @@ def received_information(update, context):
     #                            reply_markup=markup)
     
     if (category == 'Nombre completo'):
-        update.message.reply_text('Bien!! Su nombre es: {}. \n'
-                                    'Vuelva a elegir o pulse acabar'.format(text),
+        update.message.reply_text('Bien!! Su nombre es: {}. ✅ \n'
+                                    '▶️ Ahora pulse "Mes de Pago".'.format(text),
                                     reply_markup=markup)
     elif (category == 'Mes de pago'):
-        update.message.reply_text('Genial!! El mes de pago de tu cuota fue en: {}. \n'
-                                    'Vuelva a elegir o pulse acabar'.format(text),
+        update.message.reply_text('Genial!! El mes de pago de tu cuota fue en: {}. ✅\n'
+                                    '▶️ Acontinuación pulse "Grupo de Trabajo".'.format(text),
                                     reply_markup=markup)    
     elif (category == 'Grupo de trabajo'):
-        update.message.reply_text('Perfecto!! Tus grupos de trabajo son: '
-                                    '{}.\n Vuelva a elegir o pulse acabar' .format(facts_to_str(user_data)),
+        update.message.reply_text('Perfecto!! Tus grupos de trabajo son:\n'
+                                    '{}. ✅ ' .format(text),
                                     reply_markup=markup)
+        update.message.reply_text('Tus datos de registro son los siguientes:' 
+                                    '{} \nSi la informacion es correcta pulsa \n➡️ "Acabar" ⬅️, ' 
+                                    'si no lo es, modificala.'.format(facts_to_str(user_data)),
+                                    ) 
         
     del user_data['choice']
-
+    
     return CHOOSING
     
 
@@ -156,7 +162,7 @@ def done(update, context):
     with open(users, 'w') as f:
         json.dump(db, f, default=str)
         f.close()
-    update.message.reply_text("Felicidades!! El registro se ha completado correctamente...")
+    update.message.reply_text("Felicidades!! 🎉🎊 ✅✅ El registro se ha completado correctamente... ✅✅")
     user_data.clear()
     return ConversationHandler.END
 
