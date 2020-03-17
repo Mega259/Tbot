@@ -69,12 +69,25 @@ def setup_registrar_handler():
         fallbacks=[MessageHandler(Filters.regex('^SI$'), done)]
     )
 
+## Teclado principal del Registro
 reply_keyboard = [
     ['Nombre completo', 'Mes de pago'],
     ['Grupo de trabajo'],
     ['Acabar']
 ]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+
+## Teclado para seleccionar la cantidad de Grupos de Trabajo pertenece el usuario
+reply_keyboard_ngp = [
+    ['1','Más de 1']
+]
+markup_ngp = ReplyKeyboardMarkup(reply_keyboard_ngp, one_time_keyboard = True)
+
+## Teclado para seleccionar los Grupos de Trabajo
+reply_keyboard_GP = [
+    ['Redes Sociales'],['Proyectos']
+]
+markup_GP = ReplyKeyboardMarkup(reply_keyboard_GP, one_time_keyboard = True)
 
 def start_registrar(update, context):
     user_id = update.message.chat.username
@@ -90,7 +103,7 @@ def start_registrar(update, context):
             update.message.reply_text('Bienvenido de nuevo, 🖖🏼🖖🏼 ¿qué dato deseas editar? 🔖🔁', reply_markup=markup)
         else:
             update.message.reply_text(
-                "Hola 👋🏼👋🏼, soy Wallee 🤖🤖, el bot del FABLAB Badajoz 🔧💻 "
+                "Hola 👋🏼👋🏼, soy Wallee 🤖🤖, el bot del FABLAB Badajoz 🔧💻.\n "
                 "Vamos a proceder a registrarte. 📝📝\n"
                 "▶️ Pulsa 'Nombre Completo' ",
                 reply_markup=markup)
@@ -106,7 +119,8 @@ def generic_choice(update, context):
     elif (text == 'Mes de pago'):
         update.message.reply_text('Escriba el mes de pago de la cuota anual: ⬇️⬇️')    
     elif (text == 'Grupo de trabajo'):
-        update.message.reply_text('Escriba su grupo u grupos de trabajo separados por coma: ⬇️⬇️')
+        ##update.message.reply_text('Escriba su grupo u grupos de trabajo separados por coma: ⬇️⬇️')
+        update.message.reply_text('Indica a cuantos Grupos de Trabajo perteneces: ⬇️⬇️', reply_markup=markup_ngp)
 
     return TYPING_CHOICE
 
@@ -126,16 +140,19 @@ def received_information(update, context):
                                     reply_markup=markup)
     elif (category == 'Mes de pago'):
         update.message.reply_text('Genial!! El mes de pago de tu cuota fue en: {}. ✅\n'
-                                    '▶️ Acontinuación pulse "Grupo de Trabajo".'.format(text),
+                                    '▶️ A continuación pulse "Grupo de Trabajo".'.format(text),
                                     reply_markup=markup)    
     elif (category == 'Grupo de trabajo'):
-        update.message.reply_text('Perfecto!! Tus grupos de trabajo son:\n'
-                                    '{}. ✅ ' .format(text),
-                                    reply_markup=markup)
-        update.message.reply_text('Tus datos de registro son los siguientes:' 
-                                    '{} \nSi la informacion es correcta pulsa \n➡️ "Acabar" ⬅️, ' 
-                                    'si no lo es, modificala.'.format(facts_to_str(user_data)),
-                                    ) 
+        if(text == '1'):
+            update.message.reply_text('Perfecto!! Tus grupos de trabajo son:\n'
+                                        '{}. ✅ ' .format(text),
+                                        reply_markup=markup_GP)
+        elif (text == 'Más de 1'):
+            update.message.reply_text('Tus datos de registro son los siguientes:' 
+                                        '{} \nSi la informacion es correcta pulsa \n➡️ "Acabar" ⬅️, ' 
+                                        'si no lo es, modificala.'.format(facts_to_str(user_data)),
+                                        reply_markup=markup_GP
+                                        ) 
         
     del user_data['choice']
     
@@ -162,7 +179,7 @@ def done(update, context):
     with open(users, 'w') as f:
         json.dump(db, f, default=str)
         f.close()
-    update.message.reply_text("Felicidades!! 🎉🎊 ✅✅ El registro se ha completado correctamente... ✅✅")
+    update.message.reply_text("Felicidades!! 🎉🎊\n ✅✅ El registro se ha completado correctamente... ✅✅")
     user_data.clear()
     return ConversationHandler.END
 
